@@ -1,7 +1,7 @@
 const mongoose = require ("mongoose")
 const Schema = mongoose.Schema
 // TODO: Please make sure you edit the user model to whatever makes sense in this case
-const recipeSchema = new Schema(
+const itemSchema = new Schema(
   {
     name: {
       type: String,
@@ -10,11 +10,13 @@ const recipeSchema = new Schema(
     description: {
       type: String
     },
-    chef: {type: Schema.Types.ObjectId, ref: 'User'
 
-    }
-
+    price: {
+      type: String,
+      required: true
+    },
+ 
   }
 );
-const Recipe = mongoose.model("Recipe", recipeSchema);
-module.exports = Recipe;
+const Item = mongoose.model("item", itemSchema);
+module.exports = Item;

@@ -86,13 +86,13 @@ async function signup(req, res) {
       }
 
     } catch (err) {
-        if (validationError(error)) {
-            return res.status(400).json({ message: error.message });
+        if (validationError(err)) {
+            return res.status(400).json({ message: err.message });
           }
-          if (isMongoError(error)) {
-            return res.status(400).json({ message: error.message });
+          if (isMongoError(err)) {
+            return res.status(400).json({ message: err.message });
           }
-          return res.status(500).json({ message: error.message });
+          return res.status(500).json({ message: JSON.stringify(err.message) });
         }
   }
   
