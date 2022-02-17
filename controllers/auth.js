@@ -13,13 +13,13 @@ function isMongoError(error) {
 
 async function signup(req, res) {
     try {
-      const { email, password} = req.body;
+      const { email, password, phone, address, name} = req.body;
 
-      const hasMissingCredentials = !email || !password
+      const hasMissingCredentials = !email || !password || !phone || !address || !name
       if (hasMissingCredentials) {
         return res
         .status(400)
-        .json({ message: "Email and password are required" });
+        .json({ message: "Information missing" });
 
       }
 
@@ -36,6 +36,9 @@ async function signup(req, res) {
       const newUser = await User.create({
         email,
         password: hashedPassword,
+        phone,
+        address,
+        name
       });
   
       req.session.currentUser = {
@@ -44,8 +47,8 @@ async function signup(req, res) {
       };
 
 
-      return res.status(200);
-    } catch (err) {
+      return res.status(200).json({message: "OK"});
+    } catch (error) {
         if (validationError(error)) {
             return res.status(400).json({ message: error.message });
           }
@@ -74,7 +77,7 @@ async function signup(req, res) {
       if (!user) {
         return res
         .status(400)
-        .json({ message: "Email and password are required" });
+        .json({ message: "User not found" });
 
       }
 
@@ -82,7 +85,7 @@ async function signup(req, res) {
       if (hasCorrectPassword) {
         const { password, ...currentUser } = user;
         req.session.currentUser = currentUser;
-        return res.status(200);
+        return res.status(200).json({message: "ok"});
       }
 
     } catch (err) {
@@ -107,7 +110,9 @@ async function signup(req, res) {
 
   async function isLoggedIn(req, res) {
     try {
-      const user = req.session.user;
+      console.log(req.session)
+      const user = req.session.currentUser;
+
       if (!user) {
         return res.status(400).json(null);
       }
