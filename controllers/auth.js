@@ -55,7 +55,7 @@ async function signup(req, res) {
 }
 
 async function login(req, res) {
-  winston.log("info", "inside the req");
+  winston.log("info", req);
   try {
     const { email, password } = req.body;
     const hasMissingCredentials = !email || !password;
