@@ -46,7 +46,7 @@ async function start() {
 
     sessionConfig();
     app.use((req, res, next) => {
-      winston.log("info", req);
+      winston.log("session", req.session);
       next();
     });
     app.use("/api/items", itemRoutes);
