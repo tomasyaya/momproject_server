@@ -48,9 +48,12 @@ async function start() {
     app.use(cors({ credentials: true, origin: FRONTEND_URL }));
 
     sessionConfig();
-
-    app.use("/api", authRoutes);
+    app.use((req, res, next) => {
+      winston.log("req", req);
+      next();
+    });
     app.use("/api/items", itemRoutes);
+    app.use("/api", authRoutes);
 
     app.get("/", (req, res) => {
       res.status(200).json({ message: "running" });
