@@ -89,11 +89,13 @@ async function login(req, res) {
 }
 
 async function logout(req, res) {
+  winston.log("info", req);
   try {
     await req.session.destroy();
     return res.status(200);
   } catch (err) {
     console.log(err);
+    return res.status(400).json({ message: err.message });
   }
 }
 
