@@ -37,14 +37,14 @@ function sessionConfig() {
 
 async function start() {
   try {
-    const { connection } = await mongoose.connect(MONGODB_URL);
+    await mongoose.connect(MONGODB_URL);
     app.use(express.json());
     // allows to process all form data
     app.use(express.urlencoded({ extended: true }));
     // cors middleware is to allow request comming from a diferent url than the one hosting the server
     app.use(cors({ credentials: true, origin: FRONTEND_URL }));
 
-    // sessionConfig();
+    sessionConfig();
     app.use((req, res, next) => {
       winston.log("info", req);
       next();
