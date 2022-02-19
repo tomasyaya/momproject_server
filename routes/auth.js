@@ -6,8 +6,8 @@ const { isAnon, noAnon } = require("../middlewares/auth");
 
 router
   .post("/login", login)
-  .post("/signup", isAnon, signup)
-  .post("/logout", noAnon, logout)
+  .post("/signup", signup)
+  .post("/logout", logout)
   .get("/login", isLoggedIn);
 
 module.exports = router;

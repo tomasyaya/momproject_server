@@ -100,13 +100,15 @@ async function logout(req, res) {
 async function isLoggedIn(req, res) {
   try {
     console.log(req.session);
-    const user = req.session.currentUser;
+    const user = req?.session?.currentUser;
 
     if (!user) {
       return res.status(400).json(null);
     }
     res.status(200).json(user);
-  } catch (err) {}
+  } catch (err) {
+    return res.status(500).json({ message: "error" });
+  }
 }
 
 module.exports = {
