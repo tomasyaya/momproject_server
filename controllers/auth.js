@@ -91,7 +91,8 @@ async function login(req, res) {
 async function logout(req, res) {
   winston.log("info", req);
   try {
-    return res.status(200);
+    await req.session.destroy();
+    return res.status(200).json({ message: "logout" });
   } catch (err) {
     console.log(err);
     return res.status(400).json({ message: err.message });
