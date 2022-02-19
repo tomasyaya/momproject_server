@@ -2,17 +2,19 @@ require("dotenv").config();
 
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
-
+const winston = require("winston");
 const mongoose = require("mongoose");
 
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const authRoutes = require ("./routes/auth")
-const itemRoutes = require ("./routes/item")
+const authRoutes = require("./routes/auth");
+const itemRoutes = require("./routes/item");
+
+const { NODE_ENV, MONGODB_URL, SESSION_SECRET, FRONTEND_URL, PORT } =
+  process.env;
 
 function sessionConfig() {
-  const { NODE_ENV, MONGODB_URL, SESSION_SECRET } = process.env;
   const isProduction = NODE_ENV === "production";
   const sameSite = isProduction ? "none" : "lax";
   app.set("trust proxy", 1);
@@ -34,35 +36,30 @@ function sessionConfig() {
 }
 
 async function start() {
-    try {
-   
-
-    const { connection } = await mongoose.connect(process.env.MONGODB_URL);
+  try {
+    const { connection } = await mongoose.connect(MONGODB_URL);
     console.log(`Conected to DB: ${connection.name}`);
-  
-    sessionConfig()
-
+    winston.log("info", FRONTEND_URL);
+    console.log("URL", FRONTEND_URL);
     app.use(express.json());
     // allows to process all form data
     app.use(express.urlencoded({ extended: true }));
     // cors middleware is to allow request comming from a diferent url than the one hosting the server
-    app.use(cors({ credentials: true, origin: process.env.FRONTEND_URL }));
+    app.use(cors({ credentials: true, origin: FRONTEND_URL }));
 
-    
-      
-      const { PORT } = process.env;
-      app.use("/api", authRoutes);
-      app.use("/api/items", itemRoutes )
-  
-      app.get("/", (req, res) => {
-        res.status(200).json({ message: "running" });
-      });
-  
-      app.listen(PORT, () => console.log(`Server running at: ${PORT}`));
-    } catch (err) {
-      console.log(err.message);
-    }
+    sessionConfig();
+
+    app.use("/api", authRoutes);
+    app.use("/api/items", itemRoutes);
+
+    app.get("/", (req, res) => {
+      res.status(200).json({ message: "running" });
+    });
+
+    app.listen(PORT, () => console.log(`Server running at: ${PORT}`));
+  } catch (err) {
+    console.log(err.message);
   }
-  
-start()
-  
+}
+
+start();
